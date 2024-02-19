@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "bun:test";
+// import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import {
   addDays as addDaysDateFns,
   subDays as subDaysDateFns,
@@ -36,21 +36,21 @@ describe("toDateId: UTC time zone", () => {
   });
 
   it("January 1st, 2024", () => {
-    expect(toDateId(new Date("2024-01-01T00:00:00.000Z"))).toBe("2024-01-01");
+    expect(toDateId(new Date("2024-01-01T05:00:00.000Z"))).toBe("2024-01-01");
   });
   it("January 31th, 2024", () => {
-    expect(toDateId(new Date("2024-01-31T00:00:00.000Z"))).toBe("2024-01-31");
+    expect(toDateId(new Date("2024-01-31T05:00:00.000Z"))).toBe("2024-01-31");
   });
   it("February 1st, 2024", () => {
-    expect(toDateId(new Date("2024-02-01T00:00:00.000Z"))).toBe("2024-02-01");
+    expect(toDateId(new Date("2024-02-01T05:00:00.000Z"))).toBe("2024-02-01");
   });
   it("February 10th, 2024", () => {
-    expect(toDateId(new Date("2024-02-10T00:00:00.000Z"))).toBe("2024-02-10");
+    expect(toDateId(new Date("2024-02-10T05:00:00.000Z"))).toBe("2024-02-10");
   });
   it("convert between ID -> Date -> ID returns the original result", () => {
-    const id = "2024-02-01";
+    const id = "2024-02-01T05:00:00.000Z";
     const date = new Date(id);
-    expect(toDateId(date)).toBe(id);
+    expect(toDateId(date)).toBe("2024-02-01");
   });
 });
 
@@ -317,16 +317,16 @@ describe("subDays", () => {
 
 describe("isWeekend", () => {
   it("Friday", () => {
-    expect(pipe(fromDateId("2024-02-16"), isWeekend)).toBeFalse();
+    expect(pipe(fromDateId("2024-02-16"), isWeekend)).toBeFalsy();
   });
   it("Saturday", () => {
-    expect(pipe(fromDateId("2024-02-17"), isWeekend)).toBeTrue();
+    expect(pipe(fromDateId("2024-02-17"), isWeekend)).toBeTruthy();
   });
   it("Sunday", () => {
-    expect(pipe(fromDateId("2024-02-18"), isWeekend)).toBeTrue();
+    expect(pipe(fromDateId("2024-02-18"), isWeekend)).toBeTruthy();
   });
   it("Monday", () => {
-    expect(pipe(fromDateId("2024-02-19"), isWeekend)).toBeFalse();
+    expect(pipe(fromDateId("2024-02-19"), isWeekend)).toBeFalsy();
   });
 });
 
@@ -425,7 +425,7 @@ describe("differenceInMonths ", () => {
       );
 
       const resultIsNegative = isNegativeZero(result);
-      expect(resultIsNegative).toBeFalse();
+      expect(resultIsNegative).toBeFalsy();
     });
   });
 

@@ -1,4 +1,4 @@
-import { describe, expect, it, setSystemTime } from "bun:test";
+// import { describe, expect, it, setSystemTime } from "bun:test";
 import { format } from "date-fns/fp/format";
 
 import { buildCalendar } from "@/hooks/useCalendar";
@@ -220,9 +220,9 @@ describe("buildCalendar", () => {
       const saturday = firstWeek[firstWeek.length - 1];
       const friday = firstWeek[firstWeek.length - 2];
 
-      expect(friday.isWeekend).toBeFalse();
-      expect(sunday.isWeekend).toBeTrue();
-      expect(saturday.isWeekend).toBeTrue();
+      expect(friday.isWeekend).toBeFalsy();
+      expect(sunday.isWeekend).toBeTruthy();
+      expect(saturday.isWeekend).toBeTruthy();
     });
     it("starting on monday", () => {
       const january = buildCalendar({
@@ -234,16 +234,16 @@ describe("buildCalendar", () => {
       const saturday = firstWeek[firstWeek.length - 2];
       const friday = firstWeek[firstWeek.length - 3];
 
-      expect(friday.isWeekend).toBeFalse();
-      expect(sunday.isWeekend).toBeTrue();
-      expect(saturday.isWeekend).toBeTrue();
+      expect(friday.isWeekend).toBeFalsy();
+      expect(sunday.isWeekend).toBeTruthy();
+      expect(saturday.isWeekend).toBeTruthy();
     });
   });
 
   describe("state", () => {
     it("active: supersedes today", () => {
       // Mock clock
-      setSystemTime(new Date(2024, 0 /*January*/, 10));
+      jest.setSystemTime(new Date(2024, 0 /*January*/, 10));
 
       const january = buildCalendar({
         calendarMonthId: "2024-01-01",
@@ -253,15 +253,15 @@ describe("buildCalendar", () => {
       });
 
       expect(january.weeksList[1][3].id).toBe("2024-01-10");
-      expect(january.weeksList[1][3].isToday).toBeTrue();
+      expect(january.weeksList[1][3].isToday).toBeTruthy();
 
       // Even though it's today, the active state supersedes it
       expect(january.weeksList[1][3].state).toBe("active");
-      expect(january.weeksList[1][3].isStartOfRange).toBeTrue();
-      expect(january.weeksList[1][3].isEndOfRange).toBeTrue();
+      expect(january.weeksList[1][3].isStartOfRange).toBeTruthy();
+      expect(january.weeksList[1][3].isEndOfRange).toBeTruthy();
 
       // Reset clock
-      setSystemTime();
+      jest.setSystemTime();
     });
 
     it("active: supersedes disabled (with calendarDisabledDateIds)", () => {
@@ -274,12 +274,12 @@ describe("buildCalendar", () => {
       });
 
       expect(january.weeksList[1][3].id).toBe("2024-01-10");
-      expect(january.weeksList[1][3].isDisabled).toBeTrue();
+      expect(january.weeksList[1][3].isDisabled).toBeTruthy();
 
       // Even though it's disabled, the active state supersedes it
       expect(january.weeksList[1][3].state).toBe("active");
-      expect(january.weeksList[1][3].isStartOfRange).toBeTrue();
-      expect(january.weeksList[1][3].isEndOfRange).toBeTrue();
+      expect(january.weeksList[1][3].isStartOfRange).toBeTruthy();
+      expect(january.weeksList[1][3].isEndOfRange).toBeTruthy();
     });
 
     it("active: supersedes disabled (with min)", () => {
@@ -292,12 +292,12 @@ describe("buildCalendar", () => {
       });
 
       expect(january.weeksList[1][3].id).toBe("2024-01-10");
-      expect(january.weeksList[1][3].isDisabled).toBeTrue();
+      expect(january.weeksList[1][3].isDisabled).toBeTruthy();
 
       // Even though it's disabled, the active state supersedes it
       expect(january.weeksList[1][3].state).toBe("active");
-      expect(january.weeksList[1][3].isStartOfRange).toBeTrue();
-      expect(january.weeksList[1][3].isEndOfRange).toBeTrue();
+      expect(january.weeksList[1][3].isStartOfRange).toBeTruthy();
+      expect(january.weeksList[1][3].isEndOfRange).toBeTruthy();
     });
 
     it("active: supersedes disabled (with max)", () => {
@@ -310,12 +310,12 @@ describe("buildCalendar", () => {
       });
 
       expect(january.weeksList[1][3].id).toBe("2024-01-10");
-      expect(january.weeksList[1][3].isDisabled).toBeTrue();
+      expect(january.weeksList[1][3].isDisabled).toBeTruthy();
 
       // Even though it's disabled, the active state supersedes it
       expect(january.weeksList[1][3].state).toBe("active");
-      expect(january.weeksList[1][3].isStartOfRange).toBeTrue();
-      expect(january.weeksList[1][3].isEndOfRange).toBeTrue();
+      expect(january.weeksList[1][3].isStartOfRange).toBeTruthy();
+      expect(january.weeksList[1][3].isEndOfRange).toBeTruthy();
     });
 
     it("active: supersedes idle", () => {
@@ -330,8 +330,8 @@ describe("buildCalendar", () => {
 
       // Even though it's disabled, the active state supersedes it
       expect(january.weeksList[1][3].state).toBe("active");
-      expect(january.weeksList[1][3].isStartOfRange).toBeTrue();
-      expect(january.weeksList[1][3].isEndOfRange).toBeTrue();
+      expect(january.weeksList[1][3].isStartOfRange).toBeTruthy();
+      expect(january.weeksList[1][3].isEndOfRange).toBeTruthy();
 
       // Just to make sure the idle state is correct
       expect(january.weeksList[1][4].state).toBe("idle");
@@ -344,7 +344,7 @@ describe("buildCalendar", () => {
       });
 
       expect(january.weeksList[1][3].id).toBe("2024-01-10");
-      expect(january.weeksList[1][3].isDisabled).toBeTrue();
+      expect(january.weeksList[1][3].isDisabled).toBeTruthy();
 
       expect(january.weeksList[1][3].state).toBe("disabled");
       // Just to make sure the idle state is correct
@@ -352,19 +352,19 @@ describe("buildCalendar", () => {
     });
 
     it("today: supersedes idle", () => {
-      setSystemTime(new Date(2024, 0 /*January*/, 10));
+      jest.setSystemTime(new Date(2024, 0 /*January*/, 10));
       const january = buildCalendar({
         calendarMonthId: "2024-01-01",
       });
 
       expect(january.weeksList[1][3].id).toBe("2024-01-10");
-      expect(january.weeksList[1][3].isToday).toBeTrue();
+      expect(january.weeksList[1][3].isToday).toBeTruthy();
       expect(january.weeksList[1][3].state).toBe("today");
 
       // Just to make sure the idle state is correct
       expect(january.weeksList[1][2].state).toBe("idle");
       expect(january.weeksList[1][4].state).toBe("idle");
-      setSystemTime();
+      jest.setSystemTime();
     });
 
     it("idle: serves as the base state", () => {
@@ -375,7 +375,7 @@ describe("buildCalendar", () => {
         january.weeksList
           .flatMap((week) => week.map((day) => day.state))
           .every((state) => state === "idle")
-      ).toBeTrue();
+      ).toBeTruthy();
     });
   });
 });
